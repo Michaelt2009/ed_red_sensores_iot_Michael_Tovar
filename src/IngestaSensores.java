@@ -1,14 +1,6 @@
 /* ============================================================
    PLATAFORMA DE MONITOREO AMBIENTAL URBANO
-   IngestaSensores - VERSION 0.2
-
-   Novedades frente a la Semana 1:
-   - La logica esta en metodos, no en un main gigante.
-   - Las lecturas ya no se imprimen y se olvidan: se GUARDAN.
-   - La validacion vive dentro de LecturaSensor.esValida().
-
-   Este archivo esta terminado. Los que estan incompletos son
-   RepositorioLecturas y AnalizadorMatriz.
+   IngestaSensores - VERSION 0.3 (SEMANA 3)
    ============================================================ */
 
 import java.io.BufferedReader;
@@ -25,7 +17,7 @@ public class IngestaSensores {
 
     public static void main(String[] args) throws IOException {
 
-        // CORRECCIÓN: Según la guía, le pasamos 10 como capacidad inicial (Fase 1)
+        // Fase 1: Capacidad inicial
         RepositorioLecturas repositorio = new RepositorioLecturas(10);
         AnalizadorMatriz analizador = new AnalizadorMatriz();
 
@@ -37,7 +29,6 @@ public class IngestaSensores {
         System.out.println("Descartadas por formato:   " + descartadasPorFormato);
         System.out.println("Descartadas por rango:     " + descartadasPorRango);
 
-        // Si ya programaste este método en tu Repositorio, esto funcionará perfecto
         System.out.println();
         System.out.println("PM2.5 promedio (repositorio): " + repositorio.promedioPm25());
 
@@ -46,6 +37,17 @@ public class IngestaSensores {
         for (int h = 0; h < 24; h++) {
             System.out.printf("Hora %02d -> PM2.5 promedio: %.2f%n", h, analizador.promedioDeHora(h));
         }
+
+        // ============================================================
+        // EXPERIMENTOS SEMANA 3: BUSQUEDA Y EFICIENCIA
+        // Unico main(): IngestaSensores llama a BancoDePruebas
+        // ============================================================
+        System.out.println();
+        System.out.println("=== SEMANA 3: EXPERIMENTOS DE BUSQUEDA ===");
+        BancoDePruebas.experimentoUno();
+        BancoDePruebas.experimentoDos();
+        BancoDePruebas.experimentoTres();
+        BancoDePruebas.experimentoCuatro();
     }
 
     /**

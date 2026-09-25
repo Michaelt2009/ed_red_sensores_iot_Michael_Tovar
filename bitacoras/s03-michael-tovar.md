@@ -135,3 +135,22 @@ La eficiencia en el procesamiento de datos masivos no depende únicamente de la 
 - [x] Registre mis commits y mi aporte individual.
 - [x] Deje claro que queda pendiente.
 - [x] Renombre el archivo con el formato `sXX-nombre.md`.
+
+---
+
+## 13. Preguntas de Pensamiento Crítico (Sección 44 de la Guía)
+
+### Pregunta 1: Una empresa tiene un millón de registros y realiza únicamente cinco búsquedas durante todo el día. ¿Tiene sentido diseñar toda la estrategia de almacenamiento alrededor de una búsqueda binaria? ¿Qué otros costos o factores considerarías?
+No tiene sentido diseñar la estrategia únicamente alrededor de la búsqueda binaria en este escenario. Mantener una colección de datos permanentemente ordenada para habilitar la búsqueda binaria implica un costo computacional elevado en operaciones de inserción, actualización y reordenamiento. Si el sistema solo realiza cinco consultas al día, el costo total del mantenimiento del orden supera ampliamente el beneficio de reducir unas pocas comparaciones. Se deben considerar la tasa de escritura frente a la de lectura, el consumo de memoria y la posibilidad de manejar índices secundarios o búsquedas lineales bajo demanda.
+
+### Pregunta 2: Un algoritmo puede ser mucho más rápido que otro y, sin embargo, producir una respuesta incorrecta. ¿Por qué consideras que la corrección debe analizarse antes que la eficiencia?
+Porque una respuesta errónea carece por completo de utilidad operativa, independientemente de qué tan rápido se genere. La eficiencia es una métrica de optimización de recursos, pero la corrección es el requisito base de cualquier sistema informático. Como se evidenció en el Experimento 4 al buscar sobre PM2.5, la velocidad no aporta valor si el algoritmo descarta datos válidos por violar precondiciones.
+
+### Pregunta 3: Imagina que una plataforma consulta constantemente por timestamp, pero ocasionalmente necesita consultar por PM2.5. ¿Qué consecuencias tendría organizar los datos pensando principalmente en uno de estos campos?
+Organizar el almacenamiento físico por timestamp optimiza las consultas cronológicas a un costo $O(\log n)$, pero condena las consultas por PM2.5 a ejecutarse mediante búsqueda lineal con complejidad $O(n)$. Para la operación de la plataforma, esto implica que mientras el monitoreo en tiempo real por tiempo responderá de manera instantánea, la generación de alertas por picos de contaminación requerirá recorrer exhaustivamente el arreglo, lo que puede generar cuellos de botella en momentos críticos a menos que se implementen estructuras de soporte adicionales como índices o tablas hash.
+
+### Pregunta 4: Supón que tienes un conjunto de datos perfectamente ordenado y alguien modifica algunos registros sin conservar el orden. ¿Qué riesgos aparecen si el sistema continúa utilizando búsqueda binaria sin verificar las condiciones de los datos?
+El riesgo principal es la aparición de falsos negativos silenciosos e impredecibles. Al asumir la precondición de orden, la búsqueda binaria descartará mitades completas del arreglo donde realmente residen los datos alterados, retornando `-1` e informando que la lectura no existe en el sistema cuando en realidad sí está almacenada. Esto compromete la integridad y confiabilidad analítica de la plataforma sin arrojar una excepción explícita.
+
+### Pregunta 5: En ingeniería de software suele decirse: "Que funcione no significa que sea una buena solución." Relaciona esta afirmación con lo aprendido en las semanas 1, 2 y 3 del proyecto. ¿Qué ha cambiado en la manera en que analizas una solución desde que comenzó el proyecto?
+En la Semana 1, el criterio de éxito era exclusivamente funcional: que el código leyera el CSV, extrajera los campos y no fallara. A partir de las Semanas 2 y 3, el análisis cambió hacia criterios de escalabilidad, uso de memoria y complejidad temporal. Una solución puede "funcionar" para 100 lecturas en un entorno controlado, pero colapsar o degradar la máquina cuando el volumen escala a 1.000.000 de registros. Ahora entiendo que una solución de ingeniería debe evaluarse por su comportamiento asintótico, la observancia de precondiciones y el consumo de recursos frente a escenarios de alta concurrencia o volumen.
